@@ -1,6 +1,7 @@
 import csv
 from flask import Flask, render_template, url_for, request, redirect
 import google.generativeai as genai
+import os
 
 
 app = Flask(__name__)
@@ -46,7 +47,12 @@ def criarTermo():
 
     return redirect(url_for('glossario')) 
 
-genai.configure(api_key="AIzaSyCTb-RmLCNoSXo-Kzfen0TA6lh5H-ZLklM")
+# Remova a chave do código e use variável de ambiente
+api_key = os.environ.get('GOOGLE_GENAI_API_KEY')
+if api_key:
+    genai.configure(api_key=api_key)
+else:
+    print('AVISO: GOOGLE_GENAI_API_KEY não definida no ambiente.')
 
 @app.route('/chatbot', methods=['GET', 'POST'])
 def chatbot_page():
@@ -65,4 +71,4 @@ def chatbot_page():
     return render_template('chatbot.html', resposta=resposta)
 
 
-app.run(debug=True)
+app.run(debug=True, port=5001)
