@@ -1,7 +1,10 @@
 import csv
 from flask import Flask, render_template, url_for, request, redirect
+import google.generativeai as genai
+
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
@@ -42,6 +45,24 @@ def criarTermo():
         writer.writerow([termo, definicao])
 
     return redirect(url_for('glossario')) 
+
+genai.configure(api_key="AIzaSyCTb-RmLCNoSXo-Kzfen0TA6lh5H-ZLklM")
+
+@app.route('/chatbot', methods=['GET', 'POST'])
+def chatbot_page():
+    resposta = None
+    if request.method == 'POST':
+        pergunta = request.form.get('pergunta')
+        if pergunta:
+            try:
+                model = genai.GenerativeModel('gemini-2.0-flash')
+                response = model.generate_content([pergunta])
+                resposta = response.candidates[0].content.parts[0].text if response.candidates else 'Sem resposta do modelo.'
+            except Exception as e:
+                import traceback
+                print('ERRO GEMINI:', traceback.format_exc())
+                resposta = f"Erro ao consultar Gemini: {str(e)}\n{traceback.format_exc()}"
+    return render_template('chatbot.html', resposta=resposta)
 
 
 app.run(debug=True)
