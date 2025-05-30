@@ -37,6 +37,11 @@ def novoTermo():
     return render_template('novo-termo.html')
 
 
+@app.route('/conteudo-python')
+def conteudoPython():
+    return render_template('conteudo-python.html')
+
+
 @app.route('/criarTermo', methods=['POST'])
 def criarTermo():
 
