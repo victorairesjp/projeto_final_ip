@@ -2,7 +2,9 @@ import csv
 from flask import Flask, render_template, url_for, request, redirect
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -12,9 +14,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/sobre-equipe')
+@app.route('/sobre-mim')
 def sobreEquipe():
-    return render_template('sobre-equipe.html')
+    return render_template('sobre-mim.html')
 
 
 @app.route('/glossario')
@@ -47,7 +49,7 @@ def criarTermo():
 
     return redirect(url_for('glossario')) 
 
-# Remova a chave do código e use variável de ambiente
+# Configuração do Google Generative AI
 api_key = os.environ.get('GOOGLE_GENAI_API_KEY')
 if api_key:
     genai.configure(api_key=api_key)
